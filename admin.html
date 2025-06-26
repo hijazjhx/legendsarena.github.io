@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Panel - LegendsArena</title>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js"></script>
+  <style>
+    body {
+      background-color: #1c1c3c;
+      color: white;
+      text-align: center;
+      padding: 50px;
+      font-family: sans-serif;
+    }
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+      margin: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>👮 Admin Panel</h1>
+  <input type="text" id="uid" placeholder="Enter User ID" />
+  <input type="number" id="amount" placeholder="Coins to Deduct" />
+  <button onclick="deductCoins()">🔥 Deduct Coins</button>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBBl52sAmoFilvVti--_JKzeg1Xq9z_zRk",
+      authDomain: "legends-arena-f1403.firebaseapp.com",
+      databaseURL: "https://legends-arena-f1403-default-rtdb.firebaseio.com",
+      projectId: "legends-arena-f1403",
+      storageBucket: "legends-arena-f1403.firebasestorage.app",
+      messagingSenderId: "906599695262",
+      appId: "1:906599695262:web:f8d4a25605eb7181b44c8f"
+    };
+
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    function deductCoins() {
+      const uid = document.getElementById("uid").value;
+      const amt = parseInt(document.getElementById("amount").value);
+
+      if (!uid || isNaN(amt)) return alert("Fill both fields correctly");
+
+      const ref = firebase.database().ref("users/" + uid);
+      ref.once("value").then(snapshot => {
+        let currentCoins = snapshot.val() ? snapshot.val().coins : 0;
+        let newCoins = Math.max(currentCoins - amt, 0);
+        ref.set({ coins: newCoins });
+        alert("Deducted! New balance: " + newCoins);
+      });
+    }
+  </script>
+</body>
+</html>
